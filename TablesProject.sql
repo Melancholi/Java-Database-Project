@@ -1,5 +1,5 @@
 DROP TABLE Warehouse_Product;
-DROP TABLE Order_Review;
+DROP TABLE Product_Review;
 DROP TABLE Warehouse_Details;
 DROP TABLE Orders_Details;
 DROP TABLE Customers_Details;
@@ -11,7 +11,8 @@ CREATE TABLE Warehouse_details(
     warehouse_address VARCHAR2(150)
     );
 CREATE TABLE Customers_details(
-    customerID NUMBER(4) PRIMARY KEY,
+    --So it updates id every time I make a new row
+    customerID NUMBER(4) GENERATED ALWAYS AS IDENTITY PRIMARY KEY ,
     customer_email VARCHAR2(200),
     first_name VARCHAR2(100),
     last_name VARCHAR2(100),
@@ -24,7 +25,8 @@ CREATE TABLE Products_Details(
     product_category    VARCHAR2(100)
     );
 CREATE TABLE Orders_Details(
-    orderid NUMBER(4) PRIMARY KEY,
+--So it updates id every time I make a new row  
+    orderid NUMBER(4) GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     customerID NUMBER(4),
     product_name VARCHAR2(75),
     quantity    NUMBER(3) CHECK (quantity>0),
@@ -36,9 +38,9 @@ CREATE TABLE Orders_Details(
     FOREIGN KEY (product_name)
     REFERENCES Products_Details(product_name)
     );
-CREATE TABLE Order_review(
+CREATE TABLE Product_review(
     orderid    NUMBER(4),
-    review      VARCHAR2(30) CHECK (review>1),
+    review      NUMBER(1) CHECK (review>1),
     review_description VARCHAR2(350),
     review_flag VARCHAR2(100),
     CONSTRAINT review_order_fk
