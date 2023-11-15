@@ -47,7 +47,7 @@ CREATE TABLE Orders_details(
     product_name VARCHAR2(75),
     quantity    NUMBER(3) CHECK (quantity>0) CONSTRAINT orderQuantityNotNull NOT NULL,
     order_date DATE CONSTRAINT orderDateNotNull NOT NULL,
-    CONSTRAINT email_fk
+    CONSTRAINT custID_fk
     FOREIGN KEY (customerID)
     REFERENCES Customers_Details(customerID),
     CONSTRAINT product_fk
