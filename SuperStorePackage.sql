@@ -46,9 +46,6 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
     EXCEPTION IDNotFound;
     EXCEPTION existingRow;
     
-    
-    --TRIGGERS
-    
 END SuperStorePackage;
 /
 --Change headers and values to new 
