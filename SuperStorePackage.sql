@@ -554,8 +554,3 @@ CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
     
 END SuperStorePackage;
 /
-SET serveroutput ON;
-DEclare
-begin 
-    SuperStorePackage.selectData('books');
-end;
