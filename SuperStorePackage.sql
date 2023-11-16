@@ -39,12 +39,13 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
     PROCEDURE AddLocation(locationO locationObj);
     PROCEDURE UpdateLocation(addressToChange NUMBER, countryToChange VARCHAR2, cityToChange VARCHAR2);
     PROCEDURE DeleteLocation(AddressToRemove NUMBER);
+    
     --EXCEPTIONS
     --Missing data, duplicates
     EXCEPTION missingRow;
     EXCEPTION IDNotFound;
     EXCEPTION existingRow;
-    EXCEPTION 
+    
     
     --TRIGGERS
     
@@ -239,7 +240,10 @@ CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
         WHERE AddressID = addressToRemove;
         COMMIT;
     END DeleteLocation;
-
+    
+    
+    --Triggers
+    
 END SuperStorePackage;
 /
 
