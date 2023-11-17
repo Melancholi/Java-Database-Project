@@ -54,7 +54,7 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
     
 END SuperStorePackage;
 /
---Change headers and values to new 
+
 CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
 
 
