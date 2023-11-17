@@ -19,7 +19,7 @@ CREATE TABLE Location_details(
 CREATE TABLE Warehouse_details(
     warehouse_name VARCHAR2(100) PRIMARY KEY,
     AddressID NUMBER(4),
-    CONSTRAINT adress_warehouse
+    CONSTRAINT address_warehouse
     FOREIGN KEY (AddressID)
     REFERENCES Location_details(AddressID)
     );

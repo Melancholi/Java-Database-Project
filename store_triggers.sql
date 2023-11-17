@@ -28,6 +28,18 @@ BEGIN
     END IF;
 END;
 /
-CREATE OR REPLACE TRIGGER 
-    BEFORE INSERT OR UPDATE OF 
+CREATE OR REPLACE TRIGGER check_warehouse_address_exists
+    BEFORE INSERT OR UPDATE OF addressid
+    ON Warehouse_Details
+    FOR EACH ROW
+DECLARE
+    confirm_data Warehouse_Details.addressid%TYPE;
+    invalid_address EXCEPTION;
+BEGIN
+    SELECT addressid INTO confirm_data FROM Warehouse_Details WHERE EXISTS(SELECT addressid FROM Location_Details ld WHERE ld.addressid = :NEW.addressid);
+    IF confirm_data IS NULL THEN
+        dbms_output.put_line( 'Address does not exist' );
+        RAISE invalid_address;
+    END IF;
 END;
+/
