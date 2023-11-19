@@ -1,12 +1,13 @@
 CREATE OR REPLACE TYPE locationObj IS OBJECT(
     AddressID NUMBER(4),
+    Address VARCHAR2(200),
     Country VARCHAR2(125),
     City VARCHAR2(100)
     );
 /
 CREATE OR REPLACE TYPE productObj IS OBJECT(
         product_name VARCHAR2(75),
-        price NUMBER(5,2),
+        price NUMBER(8,2),
         store  VARCHAR2(100),
         product_category VARCHAR2(100),
         average_review NUMBER(1)
@@ -21,12 +22,14 @@ CREATE OR REPLACE TYPE orderObj IS OBJECT(
       orderid NUMBER(4),
       customerID NUMBER(4),
       product_name VARCHAR2(75),
+      price NUMBER(8,2),
       quantity NUMBER(3),
       order_date DATE
     );
 /
 CREATE OR REPLACE TYPE productReviewObj IS OBJECT (
         product_name VARCHAR2(75),
+        customerID NUMBER(4),
         review VARCHAR2(30),
         review_description VARCHAR2(350),
         review_flag NUMBER(3)
