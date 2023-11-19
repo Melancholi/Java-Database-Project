@@ -39,16 +39,9 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
     PROCEDURE AddLocation(locationO locationObj);
     PROCEDURE UpdateLocation(addressToChange NUMBER, countryToChange VARCHAR2, cityToChange VARCHAR2);
     PROCEDURE DeleteLocation(AddressToRemove NUMBER);
-    
-    --GetDerivedData
-    PROCEDURE GetDerivedData(productName VARCHAR2);
-    --ValidateData
-    PROCEDURE ValidateData;
-    --Function to insertData
-    --Function to audit log table changes
-    
     --EXCEPTIONS
     --Missing data, duplicates
+
     DataNotFound EXCEPTION;
     existingRow EXCEPTION;
     invalidValue EXCEPTION;
@@ -60,16 +53,6 @@ END SuperStorePackage;
 --Change headers and values to new 
 CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
 
-    PROCEDURE GetDerivedData(productName VARCHAR2)
-    IS
-        
-    BEGIN
-    
-    END;
-    PROCEDURE ValidateData
-    IS
-    BEGIN
-    END;
     --Products table
     PROCEDURE AddProduct(product IN ProductObj)
     IS
@@ -98,7 +81,7 @@ CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
             WHEN existingRow THEN
                 dbms_output.put_line('There already exists a row with that data, try changing the primary key related to that table');
             WHEN invalidValue THEN
-                dbms_output.put_line('Price entered is not allowed');
+                dbms_output.put_line('Value entered is not allowed');
     END AddProduct;
     
     PROCEDURE UpdateProduct(productToChange VARCHAR2, newPrice NUMBER, newStore VARCHAR2, newCategory VARCHAR2)
@@ -125,7 +108,7 @@ CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
         
         EXCEPTION
             WHEN invalidValue THEN
-                dbms_output.put_line('Price entered is not allowed');
+                dbms_output.put_line('Value entered is not allowed');
             WHEN DataNotFound THEN
                 dbms_output.put_line('Row to change does not exist');
     END UpdateProduct;
