@@ -89,7 +89,7 @@ INSERT INTO Location_details (Address, Country, City)
 VALUES ('100 rue William, saint laurent, Quebec, Canada', 'Canada', 'Quebec');
 
 INSERT INTO Location_details (Address, Country, City)
-VALUES ('304 Rue François-Perrault, Villera Saint-Michel, Montréal, QC', 'Canada', 'Quebec');
+VALUES ('304 Rue Franï¿½ois-Perrault, Villera Saint-Michel, Montrï¿½al, QC', 'Canada', 'Quebec');
 
 INSERT INTO Location_details (Address, Country, City)
 VALUES ('86700 Weston Rd, Toronto, Canada', 'Canada', 'Ontario');
@@ -229,7 +229,7 @@ INSERT INTO Warehouse_details (warehouse_name, addressID)
 VALUES ('Warehouse A', (SELECT AddressID FROM Location_details WHERE Address = '100 rue William, saint laurent, Quebec, Canada'));
 
 INSERT INTO Warehouse_details (warehouse_name, addressID)
-VALUES ('Warehouse B', (SELECT AddressID FROM Location_details WHERE Address = '304 Rue François-Perrault, Villera Saint-Michel, Montréal, QC'));
+VALUES ('Warehouse B', (SELECT AddressID FROM Location_details WHERE Address = '304 Rue Franï¿½ois-Perrault, Villera Saint-Michel, Montrï¿½al, QC'));
 
 INSERT INTO Warehouse_details (warehouse_name, addressID)
 VALUES ('Warehouse C', (SELECT AddressID FROM Location_details WHERE Address = '86700 Weston Rd, Toronto, Canada'));
