@@ -43,3 +43,28 @@ BEGIN
     END IF;
 END;
 /
+CREATE OR REPLACE TRIGGER avg_review_score
+    AFTER INSERT OR UPDATE OF review
+    ON Product_Review
+    FOR EACH ROW
+DECLARE
+    new_avg_score Products_Details.average_review%TYPE;
+BEGIN
+    SELECT AVG(review) INTO new_avg_score FROM Product_Review pr WHERE pr.product_name = Products_Details.product_name GROUP BY product_name;
+    UPDATE Products_Details SET average_review = new_avg_score
+    WHERE Product_Review.product_name = Products_Details.product_name;
+END;
+/
+CREATE OR REPLACE TRIGGER illegal_order_handling
+    BEFORE INSERT
+    ON Order_Details
+    FOR EACH ROW
+DECLARE
+    not_enough_items EXCEPTION;
+    items_available Warehouse_Inventory.quantity%TYPE;
+BEGIN
+    SELECT wi.quantity INTO items_available FROM Warehouse_Inventory wi WHERE wi.product_name = Orders_Details.product_name;
+    IF items_available < :NEW.Orders_Details.quantity THEN
+        RAISE not_enough_items;
+    END IF;
+END;
