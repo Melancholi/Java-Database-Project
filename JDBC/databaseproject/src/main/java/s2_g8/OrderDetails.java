@@ -1,4 +1,4 @@
-package databaseproject.src.main.java.s2_g8;
+package s2_g8;
 import java.sql.*;
 import java.util.Map;
 

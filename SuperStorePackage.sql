@@ -14,7 +14,7 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
 
     -- Orders table
     PROCEDURE AddOrder(orderO orderObj);
-    PROCEDURE UpdateOrder(orderToChange NUMBER, newCustomerID NUMBER, newProductName VARCHAR2, newQuantity NUMBER, newOrderDate DATE);
+    PROCEDURE UpdateOrder(orderToChange NUMBER, newCustomerID NUMBER, newProductName VARCHAR2,newPrice NUMBER, newQuantity NUMBER, newOrderDate DATE);
     PROCEDURE DeleteOrder(orderToRemove NUMBER);
 
     
@@ -39,10 +39,9 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
     PROCEDURE AddLocation(locationO locationObj);
     PROCEDURE DeleteLocation(AddressToRemove NUMBER);
     
-    --GetDerivedData
---    PROCEDURE GetDerivedData(productName VARCHAR2);
-    --ValidateDat
-    --Function to insertData
+    FUNCTION getAverageReview(productName VARCHAR2)
+    RETURN NUMBER;
+    
     --Function to audit log table changes
     --EXCEPTIONS
     --Missing data, duplicates
@@ -56,18 +55,21 @@ END SuperStorePackage;
 /
 
 CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
-
-
---    PROCEDURE GetDerivedData(productName VARCHAR2)
---    IS
---        
---    BEGIN
---    
---    END;
---    PROCEDURE ValidateData
---    IS
---    BEGIN
---    END;
+    
+    FUNCTION getAverageReview(productName VARCHAR2)
+    RETURN NUMBER
+    IS
+        avg_score product_review.review%TYPE;
+    BEGIN
+        SELECT AVG(review) INTO avg_score 
+        FROM Product_Review pr 
+        INNER JOIN products_details pd
+        ON pr.product_name = pd.product_name
+        WHERE pr.product_name = pd.product_name 
+        GROUP BY pr.product_name;
+        RETURN avg_score;
+    END;
+    
     --Products table
     PROCEDURE AddProduct(product IN ProductObj)
     IS
@@ -524,7 +526,7 @@ CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
     PROCEDURE AddLocation(locationO IN locationObj)
     AS
     BEGIN
-        INSERT INTO Location_details(Country, City)
+        INSERT INTO Location_details(address,Country, City)
         VALUES(locationO.address, locationO.Country, locationO.City);
         COMMIT;
     END AddLocation;

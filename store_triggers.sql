@@ -21,7 +21,7 @@ DECLARE
     confirm_data Product_Review.product_name%TYPE;
     invalid_order_item EXCEPTION;
 BEGIN
-    SELECT product_name INTO confirm_data FROM Product_Review WHERE EXISTS(SELECT product_name FROM Warehouse_Inventory wi WHERE wi.product_name = :NEW.product_name);
+    SELECT product_name INTO confirm_data FROM Warehouse_inventory wi WHERE wi.product_name = :NEW.product_name;
     IF confirm_data IS NULL THEN
         dbms_output.put_line( 'Customer ID does not exist in the database!' );
         RAISE invalid_order_item;
@@ -43,28 +43,18 @@ BEGIN
     END IF;
 END;
 /
-CREATE OR REPLACE TRIGGER avg_review_score
-    AFTER INSERT OR UPDATE OF review
-    ON Product_Review
-    FOR EACH ROW
-DECLARE
-    new_avg_score Products_Details.average_review%TYPE;
-BEGIN
-    SELECT AVG(review) INTO new_avg_score FROM Product_Review pr WHERE pr.product_name = Products_Details.product_name GROUP BY product_name;
-    UPDATE Products_Details SET average_review = new_avg_score
-    WHERE Product_Review.product_name = Products_Details.product_name;
-END;
+DROP TRIGGER avg_review_score;
 /
 CREATE OR REPLACE TRIGGER illegal_order_handling
     BEFORE INSERT
-    ON Order_Details
+    ON Orders_Details
     FOR EACH ROW
 DECLARE
     not_enough_items EXCEPTION;
-    items_available Warehouse_Inventory.quantity%TYPE;
+    items_available Warehouse_inventory.quantity%TYPE;
 BEGIN
-    SELECT wi.quantity INTO items_available FROM Warehouse_Inventory wi WHERE wi.product_name = Orders_Details.product_name;
-    IF items_available < :NEW.Orders_Details.quantity THEN
+    SELECT wi.quantity INTO items_available FROM Warehouse_Inventory wi WHERE wi.product_name = :NEW.product_name;
+    IF items_available < :NEW.quantity THEN
         RAISE not_enough_items;
     END IF;
 END;
