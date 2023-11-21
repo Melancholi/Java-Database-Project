@@ -38,8 +38,7 @@ CREATE TABLE Products_Details(
     product_name VARCHAR2(75) PRIMARY KEY,
     price   NUMBER(8,2) CHECK (price>0),
     store   VARCHAR2(100),
-    product_category    VARCHAR2(100),
-    average_review NUMBER(1) CONSTRAINT productAvgCheck CHECK(average_review BETWEEN 1 AND 5)
+    product_category    VARCHAR2(100)
     );
 CREATE TABLE Orders_details(
 --So it updates id every time I make a new row  
@@ -80,6 +79,91 @@ CREATE TABLE Warehouse_inventory(
     FOREIGN KEY (warehouse_name)
     REFERENCES Warehouse_details(warehouse_name)
     );
+--Log tables
+DROP TABLE location_log;
+CREATE TABLE location_log(
+    AddressID NUMBER(4),
+    operation_type VARCHAR2(10),
+    oldAddress VARCHAR2(200),
+    newAddress VARCHAR2(200),
+    oldCountry VARCHAR2(125),
+    newCountry VARCHAR2(125),
+    oldCity VARCHAR2(100),
+    newCity VARCHAR2(100),
+    timestamp DATE
+);
+DROP TABLE products_details_log;
+CREATE TABLE products_details_log (
+    product_name VARCHAR2(75),
+    operation_type VARCHAR2(10),
+    old_price NUMBER(8,2),
+    new_price NUMBER(8,2),
+    old_store VARCHAR2(100),
+    new_store VARCHAR2(100),
+    old_product_category VARCHAR2(100),
+    new_product_category VARCHAR2(100),
+    timestamp DATE
+);
+DROP TABLE customers_details_log;
+CREATE TABLE customers_details_log (
+    customerID NUMBER(4),
+    operation_type VARCHAR2(10),
+    old_customer_email VARCHAR2(200),
+    new_customer_email VARCHAR2(200),
+    old_first_name VARCHAR2(100),
+    new_first_name VARCHAR2(100),
+    old_last_name VARCHAR2(100),
+    new_last_name VARCHAR2(100),
+    old_AddressID NUMBER(4),
+    new_AddressID NUMBER(4),
+    timestamp DATE
+);
+DROP TABLE orders_details_log;
+CREATE TABLE orders_details_log (
+    orderid NUMBER(4),
+    operation_type VARCHAR2(10),
+    old_customerID NUMBER(4),
+    new_customerID NUMBER(4),
+    old_product_name VARCHAR2(75),
+    new_product_name VARCHAR2(75),
+    old_price NUMBER(8,2),
+    new_price NUMBER(8,2),
+    old_quantity NUMBER(3),
+    new_quantity NUMBER(3),
+    old_order_date DATE,
+    new_order_date DATE,
+    timestamp DATE
+);
+DROP TABLE product_review_log;
+CREATE TABLE product_review_log (
+    product_name VARCHAR2(75),
+    customerID NUMBER(4),
+    operation_type VARCHAR2(10),
+    old_review NUMBER(1),
+    new_review NUMBER(1),
+    old_review_description VARCHAR2(350),
+    new_review_description VARCHAR2(350),
+    old_review_flag NUMBER(3),
+    new_review_flag NUMBER(3),
+    timestamp DATE
+);
+DROP TABLE warehouse_inventory_log;
+CREATE TABLE warehouse_inventory_log (
+    product_name VARCHAR2(75),
+    warehouse_name VARCHAR2(100),
+    operation_type VARCHAR2(10),
+    old_quantity NUMBER(6),
+    new_quantity NUMBER(6),
+    timestamp DATE
+);
+DROP TABLE warehouse_details_log;
+CREATE TABLE warehouse_details_log(
+    warehouseName VARCHAR2(100),
+    operation_type VARCHAR(10),
+    oldAddressID  NUMBER(4),
+    newAddressID  NUMBER(4),
+    timestamp DATE
+);
 COMMIT;
 /
 SELECT * FROM Customers_details;
@@ -174,56 +258,56 @@ INSERT INTO Customers_Details(First_Name, Last_Name, customer_Email, AddressID)
 VALUES ('Noah', 'Garcia', 'g.noah@yahoo.com', (SELECT AddressID FROM Location_Details WHERE Address = '22222 happy street, Laval, quebec, canada'));
 
 --Products THINK ABOUT WHEN Price changes between stores
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('laptop ASUS 104S', 970, 'marche adonis', 'electronics', 4);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('laptop ASUS 104S', 970, 'marche adonis', 'electronics');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('apple', 10, 'marche atwater', 'Grocery', 3);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('apple', 10, 'marche atwater', 'Grocery');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('SIMS CD', 50, 'dawson store', 'Video Games', 2);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('SIMS CD', 50, 'dawson store', 'Video Games');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('orange', 2, 'store magic', 'grocery', 5);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('orange', 2, 'store magic', 'grocery');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('Barbie Movie', 30, 'movie store', 'DVD', 1);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('Barbie Movie', 30, 'movie store', 'DVD');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('LOreal Normal Hair', 10, 'super rue champlain', 'Health', 1);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('LOreal Normal Hair', 10, 'super rue champlain', 'Health');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('BMW iX Lego', 40, 'toy r us', 'Toys', 1);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('BMW iX Lego', 40, 'toy r us', 'Toys');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('BMW i6', 50000, 'Dealer one', 'Cars', 5);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('BMW i6', 50000, 'Dealer one', 'Cars');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('Truck 500c', 856600, 'dealer montreal', 'Vehicle', 2);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('Truck 500c', 856600, 'dealer montreal', 'Vehicle');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('paper towel', 50, 'movie start', 'Beauty', 5);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('paper towel', 50, 'movie start', 'Beauty');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('plum', 10, 'marche atwater', 'grocery', 4);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('plum', 10, 'marche atwater', 'grocery');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('Lamborghini Lego', 40, 'toy r us', 'Toys', 1);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('Lamborghini Lego', 40, 'toy r us', 'Toys');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('chicken', 9.5, 'marche adonis', 'grocery', 4);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('chicken', 9.5, 'marche adonis', 'grocery');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('pasta', 13.5, 'marche atwater', 'Grocery', 5);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('pasta', 13.5, 'marche atwater', 'Grocery');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('PS5', 200, 'star store', 'electronics', NULL);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('PS5', 200, 'star store', 'electronics');
 
-INSERT INTO Products_Details (product_name, price, store, product_category, average_review)
-VALUES ('Train X745', NULL, 'store magic', 'Toys', NULL);
+INSERT INTO Products_Details (product_name, price, store, product_category)
+VALUES ('Train X745', NULL, 'store magic', 'Toys');
 
-INSERT INTO Products_details (product_name, price, store, product_category, average_review)
-VALUES('tomato',NULL,'marche adonis','Grocery',NULL);
+INSERT INTO Products_details (product_name, price, store, product_category)
+VALUES('tomato',NULL,'marche adonis','Grocery');
 --Warehouse_details
 INSERT INTO Warehouse_details (warehouse_name, addressID)
 VALUES ('Warehouse A', (SELECT AddressID FROM Location_details WHERE Address = '100 rue William, saint laurent, Quebec, Canada'));
