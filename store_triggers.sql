@@ -65,7 +65,7 @@ AFTER INSERT OR UPDATE OR DELETE
 ON location_details
 FOR EACH ROW
 DECLARE
-    operation_type location_details.operation_type%TYPE;
+    operation_type location_log.operation_type%TYPE;
 BEGIN
     IF INSERTING THEN
         operation_type:= 'INSERT';
@@ -76,7 +76,17 @@ BEGIN
     IF DELETING THEN
         operation_type:= 'DELETE';
     END IF;
-    INSERT INTO location_log(AddressID,operation_type,oldAddress,newAddress,oldCountry,newCountry,oldCity,newCity)
+    INSERT INTO location_log
+    (AddressID,
+    operation_type,
+    oldAddress,
+    newAddress,
+    oldCountry,
+    newCountry,
+    oldCity,
+    newCity,
+    timestamp
+    )
     VALUES(
         :OLD.AddressID,
         operation_type,
@@ -85,7 +95,8 @@ BEGIN
         :OLD.country,
         :NEW.country,
         :OLD.city,
-        :NEW.city
+        :NEW.city,
+        SYSDATE
     );
 END;
 /
@@ -112,7 +123,8 @@ BEGIN
         old_store,
         new_store,
         old_product_category,
-        new_product_category
+        new_product_category,
+        timestamp
     )
     VALUES (
         :OLD.product_name,
@@ -122,7 +134,8 @@ BEGIN
         :OLD.store,
         :NEW.store,
         :OLD.product_category,
-        :NEW.product_category
+        :NEW.product_category,
+        SYSDATE
     );
 END;
 /
@@ -151,7 +164,8 @@ BEGIN
         old_last_name,
         new_last_name,
         old_AddressID,
-        new_AddressID
+        new_AddressID,
+        timestamp
     )
     VALUES (
         :OLD.customerID,
@@ -163,7 +177,8 @@ BEGIN
         :OLD.last_name,
         :NEW.last_name,
         :OLD.AddressID,
-        :NEW.AddressID
+        :NEW.AddressID,
+        SYSDATE
     );
 END;
 /
@@ -194,7 +209,8 @@ BEGIN
         old_quantity,
         new_quantity,
         old_order_date,
-        new_order_date
+        new_order_date,
+        timestamp
     )
     VALUES (
         :OLD.orderid,
@@ -208,7 +224,8 @@ BEGIN
         :OLD.quantity,
         :NEW.quantity,
         :OLD.order_date,
-        :NEW.order_date
+        :NEW.order_date,
+        SYSDATE
     );
 END;
 /
@@ -232,14 +249,16 @@ BEGIN
         warehouse_name,
         operation_type,
         old_quantity,
-        new_quantity
+        new_quantity,
+        timestamp
     )
     VALUES (
         :OLD.product_name,
         :OLD.warehouse_name,
         operation_type,
         :OLD.quantity,
-        :NEW.quantity
+        :NEW.quantity,
+        SYSDATE
     );
 END;
 /
@@ -280,7 +299,7 @@ BEGIN
         :NEW.review_description,
         :OLD.review_flag,
         :NEW.review_flag,
-        CURRENT_TIMESTAMP
+        SYSDATE
     );
 END;
 /
@@ -289,7 +308,7 @@ AFTER INSERT OR UPDATE OR DELETE
 ON warehouse_details
 FOR EACH ROW
 DECLARE
-    operation_type VARCHAR2(10);
+    operation_type warehouse_details_log.operation_type%TYPE;
 BEGIN
     IF INSERTING THEN
         operation_type := 'INSERT';
@@ -300,10 +319,10 @@ BEGIN
     END IF;
 
     INSERT INTO warehouse_details_log (
-        warehouse_name,
+        warehouseName,
         operation_type,
-        old_AddressID,
-        new_AddressID,
+        oldAddressID,
+        newAddressID,
         timestamp
     )
     VALUES (
@@ -311,6 +330,6 @@ BEGIN
         operation_type,
         :OLD.AddressID,
         :NEW.AddressID,
-        CURRENT_TIMESTAMP
+        SYSDATE
     );
 END;

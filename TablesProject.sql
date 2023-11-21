@@ -89,7 +89,8 @@ CREATE TABLE location_log(
     oldCountry VARCHAR2(125),
     newCountry VARCHAR2(125),
     oldCity VARCHAR2(100),
-    newCity VARCHAR2(100)
+    newCity VARCHAR2(100),
+    timestamp DATE
 );
 DROP TABLE products_details_log;
 CREATE TABLE products_details_log (
@@ -100,7 +101,8 @@ CREATE TABLE products_details_log (
     old_store VARCHAR2(100),
     new_store VARCHAR2(100),
     old_product_category VARCHAR2(100),
-    new_product_category VARCHAR2(100)
+    new_product_category VARCHAR2(100),
+    timestamp DATE
 );
 DROP TABLE customers_details_log;
 CREATE TABLE customers_details_log (
@@ -113,7 +115,8 @@ CREATE TABLE customers_details_log (
     old_last_name VARCHAR2(100),
     new_last_name VARCHAR2(100),
     old_AddressID NUMBER(4),
-    new_AddressID NUMBER(4)
+    new_AddressID NUMBER(4),
+    timestamp DATE
 );
 DROP TABLE orders_details_log;
 CREATE TABLE orders_details_log (
@@ -128,7 +131,8 @@ CREATE TABLE orders_details_log (
     old_quantity NUMBER(3),
     new_quantity NUMBER(3),
     old_order_date DATE,
-    new_order_date DATE
+    new_order_date DATE,
+    timestamp DATE
 );
 DROP TABLE product_review_log;
 CREATE TABLE product_review_log (
@@ -140,7 +144,8 @@ CREATE TABLE product_review_log (
     old_review_description VARCHAR2(350),
     new_review_description VARCHAR2(350),
     old_review_flag NUMBER(3),
-    new_review_flag NUMBER(3)
+    new_review_flag NUMBER(3),
+    timestamp DATE
 );
 DROP TABLE warehouse_inventory_log;
 CREATE TABLE warehouse_inventory_log (
@@ -148,14 +153,16 @@ CREATE TABLE warehouse_inventory_log (
     warehouse_name VARCHAR2(100),
     operation_type VARCHAR2(10),
     old_quantity NUMBER(6),
-    new_quantity NUMBER(6)
+    new_quantity NUMBER(6),
+    timestamp DATE
 );
 DROP TABLE warehouse_details_log;
 CREATE TABLE warehouse_details_log(
     warehouseName VARCHAR2(100),
     operation_type VARCHAR(10),
     oldAddressID  NUMBER(4),
-    newAddressID  NUMBER(4) 
+    newAddressID  NUMBER(4),
+    timestamp DATE
 );
 COMMIT;
 /

@@ -42,6 +42,13 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
     FUNCTION getAverageReview(productName VARCHAR2)
     RETURN NUMBER;
     
+    FUNCTION getQuantityProductAcrossWarehouse(productName VARCHAR2)
+    RETURN NUMBER;
+    
+    FUNCTION getFlaggedReviews(productName VARCHAR2)
+    RETURN sys_refcursor;
+    
+    
     --Function to audit log table changes
     --EXCEPTIONS
     --Missing data, duplicates
@@ -55,6 +62,33 @@ END SuperStorePackage;
 /
 
 CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
+    
+    FUNCTION getFlaggedReviews(productName VARCHAR2)
+    RETURN sys_refcursor
+    IS
+        reviews sys_refcursor;
+    BEGIN
+        OPEN reviews FOR
+            SELECT review_description
+            FROM product_review
+            WHERE product_name=productName
+            AND review_flag>0;
+            RETURN reviews;
+        CLOSE reviews;
+    END;
+    
+    FUNCTION getQuantityProductAcrossWarehouse(productName VARCHAR2)
+    RETURN NUMBER
+    IS 
+        quantity_product warehouse_inventory.quantity%TYPE;
+    BEGIN
+        SELECT SUM(quantity)
+        INTO quantity_product
+        FROM warehouse_inventory
+        WHERE product_name=productName
+        GROUP BY product_name;
+        RETURN quantity_product;
+    END;
     
     FUNCTION getAverageReview(productName VARCHAR2)
     RETURN NUMBER
