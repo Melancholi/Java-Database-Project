@@ -1,4 +1,4 @@
-package databaseproject.src.main.java.s2_g8;
+package s2_g8;
 import java.sql.*;
 import java.util.Map;
 
@@ -95,7 +95,8 @@ public class ProductReview implements SQLData {
                 stmt.setObject(1, review);
                 stmt.execute();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
             conn.rollback();
         } catch (ClassNotFoundException c) {
