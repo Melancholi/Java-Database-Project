@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.Map;
 
 public class ProductReview implements SQLData {
+    private String typeName;
     private String productName;
     private int customerID;
     private int review;
@@ -70,6 +71,7 @@ public class ProductReview implements SQLData {
 
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
+        this.typeName = typeName;
         setProductName(stream.readString());
         setCustomerID(stream.readInt());
         setReview(stream.readInt());
@@ -79,14 +81,14 @@ public class ProductReview implements SQLData {
 
     @Override
     public String getSQLTypeName() {
-        return "PRODUCTREVIEWTYPE";
+        return typeName;
     }
 
     public void addToDatabase(Connection conn) throws SQLException {
         try {
             Map map = conn.getTypeMap();
             conn.setTypeMap(map);
-            map.put("PRODUCTREVIEWTYPE",
+            map.put("PRODUCTREVIEWOBJ",
                     Class.forName("ProductReview"));
             ProductReview review = new ProductReview(this.productName, this.customerID, this.review, this.reviewDescription, this.reviewFlag);
             String sql = "{call addProductReview(?)}";
@@ -95,7 +97,8 @@ public class ProductReview implements SQLData {
                 stmt.setObject(1, review);
                 stmt.execute();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
             conn.rollback();
         } catch (ClassNotFoundException c) {

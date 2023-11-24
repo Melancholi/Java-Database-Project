@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.Map;
 
 public class OrderDetails implements SQLData {
+    private String typeName;
     private int orderID;
     private int customerID;
     private String productName;
@@ -80,6 +81,7 @@ public class OrderDetails implements SQLData {
 
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
+        this.typeName = typeName;
         setOrderID(stream.readInt());
         setCustomerID(stream.readInt());
         setProductName(stream.readString());
@@ -90,17 +92,17 @@ public class OrderDetails implements SQLData {
 
     @Override
     public String getSQLTypeName() {
-        return "ORDERSDETAILSTYPE";
+        return typeName;
     }
 
     public void addToDatabase(Connection conn) throws SQLException {
         try {
             Map map = conn.getTypeMap();
             conn.setTypeMap(map);
-            map.put("ORDERSDETAILSTYPE",
+            map.put("ORDEROBJ",
                     Class.forName("OrdersDetails"));
             OrderDetails order = new OrderDetails(this.customerID, this.productName, this.price, this.quantity, this.orderDate);
-            String sql = "{call SuperStorePackage.addOrder(?)}";
+            String sql = "{call SuperStorePackage.addOrder(?, ?)}";
             try (CallableStatement stmt = conn.prepareCall(sql)) {
                 conn.setAutoCommit(false);
                 stmt.setObject(1, order);
