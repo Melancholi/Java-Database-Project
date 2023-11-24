@@ -3,6 +3,7 @@ import java.sql.*;
 import java.util.Map;
 
 public class ProductDetails implements SQLData {
+    private String typeName;
     private String productName;
     private double price;
     private String store;
@@ -70,6 +71,7 @@ public class ProductDetails implements SQLData {
 
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
+        this.typeName = typeName;
         setProductName(stream.readString());
         setPrice(stream.readDouble());
         setStore(stream.readString());
@@ -79,14 +81,14 @@ public class ProductDetails implements SQLData {
 
     @Override
     public String getSQLTypeName() {
-        return "PRODUCTDETAILSTYPE";
+        return typeName;
     }
 
     public void addToDatabase(Connection conn) throws SQLException {
         try {
             Map map = conn.getTypeMap();
             conn.setTypeMap(map);
-            map.put("PRODUCTDETAILSTYPE",
+            map.put("PRODUCTOBJ",
                     Class.forName("ProductDetails"));
             ProductDetails product = new ProductDetails(this.productName, this.price, this.store, this.productCategory, this.averageReview);
             String sql = "{call SuperStorePackage.addProduct(?)}";

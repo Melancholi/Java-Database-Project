@@ -84,14 +84,16 @@ public class CustomerDetails implements SQLData {
         try {
             Map map = conn.getTypeMap();
             conn.setTypeMap(map);
-            map.put("CUSTOMERDETAILSTYPE",
-             Class.forName("CustomerDetails"));
+            map.put("CUSTOMEROBJ",
+             Class.forName("s2_g8.CustomerDetails"));
             CustomerDetails customer = new CustomerDetails(this.customerEmail, this.firstName, this.lastName, this.addressID);
-            String sql = "{call SuperStorePackage.addCustomer(?)}";
+            String sql = "{call SuperStorePackage.addCustomer(?, ?)}";
             try (CallableStatement stmt = conn.prepareCall(sql)){
                 conn.setAutoCommit(false);
                 stmt.setObject(1, customer);
+                stmt.registerOutParameter(2, Types.INTEGER);
                 stmt.execute();
+                setCustomerID((int) stmt.getInt(2));
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -13,7 +13,7 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
 
 
     -- Orders table
-    PROCEDURE AddOrder(orderO orderObj);
+    PROCEDURE AddOrder(orderO orderObj, order_id OUT Orders_Details.orderid%TYPE);
     PROCEDURE UpdateOrder(orderToChange NUMBER, newCustomerID NUMBER, newProductName VARCHAR2,newPrice NUMBER, newQuantity NUMBER, newOrderDate DATE);
     PROCEDURE DeleteOrder(orderToRemove NUMBER);
 
@@ -25,7 +25,7 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
 
     
     -- Customers table
-    PROCEDURE AddCustomer(customer customerObj);
+    PROCEDURE AddCustomer(customer customerObj, cust_id OUT Customers_Details.customerid%TYPE);
     PROCEDURE UpdateCustomer(customerToChange NUMBER, customerEmail VARCHAR2, firstName VARCHAR2, lastName VARCHAR2, customerAddress NUMBER);
     PROCEDURE DeleteCustomer(customerToRemove NUMBER);  
 
@@ -36,7 +36,7 @@ CREATE OR REPLACE PACKAGE SuperStorePackage AS
     PROCEDURE DeleteWarehouseInventory(productNameToRemove VARCHAR2, warehouseNameToRemove VARCHAR2);
 
     --Location
-    PROCEDURE AddLocation(locationO locationObj);
+    PROCEDURE AddLocation(locationO locationObj, locationID OUT Location_Details.addressID%TYPE);
     PROCEDURE DeleteLocation(AddressToRemove NUMBER);
     
     FUNCTION getAverageReview(productName VARCHAR2)
@@ -257,7 +257,7 @@ CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
     
     
     -- Orders table
-    PROCEDURE AddOrder(orderO IN orderObj)
+    PROCEDURE AddOrder(orderO IN orderObj, order_id OUT Orders_Details.orderid%TYPE)
     IS
         productRowCount NUMBER;
         customerRowCount NUMBER;
@@ -280,8 +280,8 @@ CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
             RAISE DataNotFound;
         END IF;
     
-        INSERT INTO Orders_Details(customerID, product_name,price, quantity, order_date)
-        VALUES(orderO.customerID, orderO.product_name,orderO.price, orderO.quantity, orderO.order_date);
+        INSERT INTO Orders_Details (customerID, product_name, price, quantity, order_date)
+        VALUES(orderO.customerID, orderO.product_name, orderO.price, orderO.quantity, orderO.order_date);
         COMMIT;
     
         EXCEPTION
@@ -424,12 +424,14 @@ CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
     
     
     -- Customers table
-    PROCEDURE AddCustomer(customer IN customerObj)
+    PROCEDURE AddCustomer(customer IN customerObj, cust_id OUT Customers_Details.customerid%TYPE)
     AS
     BEGIN
         INSERT INTO Customers_Details(customer_email, first_name, last_name, addressID)
         VALUES(customer.customer_email, customer.first_name, customer.last_name, customer.addressID);
         COMMIT;
+        
+        SELECT customerID INTO cust_id FROM Customers_Details HAVING customerID = MAX(customerID) GROUP BY customerID;
     END AddCustomer;
     
     PROCEDURE UpdateCustomer(customerToChange NUMBER, customerEmail VARCHAR2, firstName VARCHAR2, lastName VARCHAR2, customerAddress NUMBER)
@@ -557,12 +559,13 @@ CREATE OR REPLACE PACKAGE BODY SuperStorePackage AS
     END DeleteWarehouseInventory;
     
     -- Location
-    PROCEDURE AddLocation(locationO IN locationObj)
+    PROCEDURE AddLocation(locationO IN locationObj, locationID OUT Location_Details.addressID%TYPE)
     AS
     BEGIN
         INSERT INTO Location_details(address,Country, City)
         VALUES(locationO.address, locationO.Country, locationO.City);
         COMMIT;
+        SELECT addressID INTO locationID FROM Location_Details HAVING addressID = MAX(addressID) GROUP BY addressID;
     END AddLocation;
     
     

@@ -42,4 +42,18 @@ public class StoreServices {
         ProductReview review = new ProductReview(name, customerID, reviewScore, reviewDesc, reviewFlag);
         review.addToDatabase(this.conn);
     }
+
+    public void addOrder(int customer, String product, double price, int quantity, String orderDate) throws SQLException {
+        OrderDetails order = new OrderDetails(customer, product, price, quantity, java.sql.Date.valueOf(orderDate));
+        order.addToDatabase(this.conn);
+    }
+
+    public void addCustomer(String customerEmail, String firstName, String lastName, int addressID) throws SQLException {
+        CustomerDetails customer = new CustomerDetails(customerEmail, firstName, lastName, addressID);
+        customer.addToDatabase(this.conn);
+    }
+
+    public void addLocation(String address, String country, String city) {
+        LocationDetails location = new LocationDetails(address, country, city);
+    }
 }

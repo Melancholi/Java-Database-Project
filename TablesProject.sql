@@ -2,6 +2,15 @@
 --Add link to location from customer details
 -- Make address id
 
+DROP TABLE location_log;
+DROP TABLE warehouse_details_log;
+DROP TABLE warehouse_inventory_log;
+DROP TABLE product_review_log;
+DROP TABLE products_details_log;
+DROP TABLE orders_details_log;
+DROP TABLE customers_details_log;
+
+
 DROP TABLE Warehouse_Inventory;
 DROP TABLE Product_Review;
 DROP TABLE Warehouse_Details;
@@ -82,6 +91,7 @@ CREATE TABLE Warehouse_inventory(
 --Log tables
 DROP TABLE location_log;
 CREATE TABLE location_log(
+    chnaged_data_id NUMBER(4)   GENERATED ALWAYS AS IDENTITY    PRIMARY KEY,
     AddressID NUMBER(4),
     operation_type VARCHAR2(10),
     oldAddress VARCHAR2(200),
@@ -90,10 +100,15 @@ CREATE TABLE location_log(
     newCountry VARCHAR2(125),
     oldCity VARCHAR2(100),
     newCity VARCHAR2(100),
-    timestamp DATE
+    timestamp DATE,
+    
+    CONSTRAINT address_id_fk
+        FOREIGN KEY (addressID)
+            REFERENCES Location_Details(addressID)
 );
 DROP TABLE products_details_log;
 CREATE TABLE products_details_log (
+    changed_data_id NUMBER(4)   GENERATED ALWAYS AS IDENTITY  PRIMARY KEY,
     product_name VARCHAR2(75),
     operation_type VARCHAR2(10),
     old_price NUMBER(8,2),
@@ -102,10 +117,15 @@ CREATE TABLE products_details_log (
     new_store VARCHAR2(100),
     old_product_category VARCHAR2(100),
     new_product_category VARCHAR2(100),
-    timestamp DATE
+    timestamp DATE,
+    
+    CONSTRAINT pname_fk
+        FOREIGN KEY (product_name)
+            REFERENCES Products_Details(product_name)
 );
 DROP TABLE customers_details_log;
 CREATE TABLE customers_details_log (
+    changed_data_id NUMBER(4)   GENERATED ALWAYS AS IDENTITY  PRIMARY KEY,
     customerID NUMBER(4),
     operation_type VARCHAR2(10),
     old_customer_email VARCHAR2(200),
@@ -116,10 +136,15 @@ CREATE TABLE customers_details_log (
     new_last_name VARCHAR2(100),
     old_AddressID NUMBER(4),
     new_AddressID NUMBER(4),
-    timestamp DATE
+    timestamp DATE,
+    
+    CONSTRAINT customer_id_fk
+        FOREIGN KEY (customerID)
+            REFERENCES Customers_Details(customerID)
 );
 DROP TABLE orders_details_log;
 CREATE TABLE orders_details_log (
+    changed_data_id NUMBER(4)   GENERATED ALWAYS AS IDENTITY  PRIMARY KEY,
     orderid NUMBER(4),
     operation_type VARCHAR2(10),
     old_customerID NUMBER(4),
@@ -132,10 +157,15 @@ CREATE TABLE orders_details_log (
     new_quantity NUMBER(3),
     old_order_date DATE,
     new_order_date DATE,
-    timestamp DATE
+    timestamp DATE,
+    
+    CONSTRAINT order_id_fk
+        FOREIGN KEY (orderid)
+            REFERENCES Orders_Details (orderid)
 );
 DROP TABLE product_review_log;
 CREATE TABLE product_review_log (
+    changed_data_id NUMBER(4)   GENERATED ALWAYS AS IDENTITY  PRIMARY KEY,
     product_name VARCHAR2(75),
     customerID NUMBER(4),
     operation_type VARCHAR2(10),
@@ -145,24 +175,41 @@ CREATE TABLE product_review_log (
     new_review_description VARCHAR2(350),
     old_review_flag NUMBER(3),
     new_review_flag NUMBER(3),
-    timestamp DATE
+    timestamp DATE,
+
+    CONSTRAINT pname_review_fk
+        FOREIGN KEY (product_name)
+            REFERENCES Products_Details(product_name),
+    CONSTRAINT customerid_review_fk
+        FOREIGN KEY (customerid)
+            REFERENCES Customers_Details (customerID)
 );
 DROP TABLE warehouse_inventory_log;
 CREATE TABLE warehouse_inventory_log (
+    changed_data_id NUMBER(4)   GENERATED ALWAYS AS IDENTITY  PRIMARY KEY,
     product_name VARCHAR2(75),
     warehouse_name VARCHAR2(100),
     operation_type VARCHAR2(10),
     old_quantity NUMBER(6),
     new_quantity NUMBER(6),
-    timestamp DATE
+    timestamp DATE,
+    
+    CONSTRAINT pname_inventory_fk
+        FOREIGN KEY (product_name)
+            REFERENCES Products_Details(product_name)
 );
 DROP TABLE warehouse_details_log;
 CREATE TABLE warehouse_details_log(
+    changed_data_id NUMBER(4)   GENERATED ALWAYS AS IDENTITY  PRIMARY KEY,
     warehouseName VARCHAR2(100),
     operation_type VARCHAR(10),
     oldAddressID  NUMBER(4),
     newAddressID  NUMBER(4),
-    timestamp DATE
+    timestamp DATE,
+    
+    CONSTRAINT warehouse_name_log_fk
+        FOREIGN KEY (warehouseName)
+            REFERENCES Warehouse_Details (warehouse_name)
 );
 COMMIT;
 /
